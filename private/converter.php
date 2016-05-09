@@ -67,68 +67,147 @@ class Converter{
         $this->objExcel = $objReader->load( $this->file );
     }
 
-    private function getArray(){
+    private function removeLT($string){
+        $chars = [
+            'ą' => 'a',
+            'Ą' => 'A',
+            'č' => 'c',
+            'Č' => 'C',
+            'ę' => 'e',
+            'Ę' => 'E',
+            'ė' => 'e',
+            'Ė' => 'E',
+            'į' => 'i',
+            'Į' => 'I',
+            'š' => 's',
+            'Š' => 'S',
+            'ų' => 'u',
+            'Ų' => 'U',
+            'ū' => 'u',
+            'Ū' => 'U',
+            'ž' => 'z',
+            'Ž' => 'Z',
+        ];
+        foreach($chars as $lt => $latin){
+            $string = str_replace($lt, $latin, $string);
+        }
+        return $string;
+    }
+
+    private function getArray($type){
         $rowIterator = $this->objExcel->getActiveSheet()->getRowIterator();
 
         $array_data = array();
-        foreach($rowIterator as $row){
-            $cellIterator = $row->getCellIterator();
-            $cellIterator->setIterateOnlyExistingCells(false);
-            if(1 == $row->getRowIndex ()) continue;
-            $rowIndex = $row->getRowIndex ();
-            $array_data[$rowIndex] = array();
+        if($type == 'studentai') {
+            foreach ($rowIterator as $row) {
+                $cellIterator = $row->getCellIterator();
+                $cellIterator->setIterateOnlyExistingCells(false);
+                if (1 == $row->getRowIndex()) continue;
+                $rowIndex = $row->getRowIndex();
+                $array_data[$rowIndex] = array();
 
-            foreach ($cellIterator as $cell) {
-                if('A' == $cell->getColumn()){
-                    $array_data[$rowIndex]['vardas'] = $cell->getFormattedValue();
-                } else if('B' == $cell->getColumn()){
-                    $array_data[$rowIndex]['pavarde'] = $cell->getFormattedValue();
-                } else if('C' == $cell->getColumn()){
-                    $array_data[$rowIndex]['vardas_pavarde'] = $cell->getFormattedValue();
-                } else if('D' == $cell->getColumn()){
-                    $array_data[$rowIndex]['ak'] = $cell->getFormattedValue();
-                } else if('E' == $cell->getColumn()){
-                    $array_data[$rowIndex]['0ak'] = $cell->getFormattedValue();
-                } else if('F' == $cell->getColumn()){
-                    $array_data[$rowIndex]['gimimo_data'] = $cell->getFormattedValue();
-                } else if('G' == $cell->getColumn()){
-                    $array_data[$rowIndex]['lytis'] = $cell->getFormattedValue();
-                } else if('H' == $cell->getColumn()){
-                    $array_data[$rowIndex]['el_pastas'] = $cell->getFormattedValue();
-                } else if('I' == $cell->getColumn()){
-                    $array_data[$rowIndex]['tel'] = $cell->getFormattedValue();
-                } else if('J' == $cell->getColumn()){
-                    $array_data[$rowIndex]['gatve'] = $cell->getFormattedValue();
-                } else if('K' == $cell->getColumn()){
-                    $array_data[$rowIndex]['miestas'] = $cell->getFormattedValue();
-                } else if('L' == $cell->getColumn()){
-                    $array_data[$rowIndex]['katedra'] = $cell->getFormattedValue();
-                } else if('M' == $cell->getColumn()){
-                    $array_data[$rowIndex]['studiju_programa'] = $cell->getFormattedValue();
-                } else if('N' == $cell->getColumn()){
-                    $array_data[$rowIndex]['kursas'] = $cell->getFormattedValue();
-                } else if('O' == $cell->getColumn()){
-                    $array_data[$rowIndex]['studiju_pradzia'] = $cell->getFormattedValue();
-                } else if('P' == $cell->getColumn()){
-                    $array_data[$rowIndex]['studiju_pabaiga'] = $cell->getFormattedValue();
-                } else if('Q' == $cell->getColumn()){
-                    $array_data[$rowIndex]['lsp_numeris'] = $cell->getFormattedValue();
-                } else if('R' == $cell->getColumn()){
-                    $array_data[$rowIndex]['ldap'] = $cell->getFormattedValue();
-                } else if('S' == $cell->getColumn()){
-                    $array_data[$rowIndex]['kalbos_kodas'] = $cell->getFormattedValue();
-                } else if('T' == $cell->getColumn()){
-                    $array_data[$rowIndex]['statusas'] = $cell->getFormattedValue();
-                } else if('U' == $cell->getColumn()){
-                    $array_data[$rowIndex]['profilio_kodas'] = $cell->getFormattedValue();
-                } else if('V' == $cell->getColumn()){
-                    $array_data[$rowIndex]['bibl_filialo_kodas'] = $cell->getFormattedValue();
-                } else if('W' == $cell->getColumn()){
-                    $array_data[$rowIndex]['adresas_irasytas'] = $cell->getFormattedValue();
-                } else if('X' == $cell->getColumn()){
-                    $array_data[$rowIndex]['1metai'] = $cell->getFormattedValue();
-                } else if('Y' == $cell->getColumn()){
-                    $array_data[$rowIndex]['atsitiktiniu_simboliu_seka'] = $cell->getFormattedValue();
+                foreach ($cellIterator as $cell) {
+                    if ('A' == $cell->getColumn()) {
+                        $array_data[$rowIndex]['vardas'] = $cell->getFormattedValue();
+                    } else if ('B' == $cell->getColumn()) {
+                        $array_data[$rowIndex]['pavarde'] = $cell->getFormattedValue();
+                    } else if ('C' == $cell->getColumn()) {
+                        $array_data[$rowIndex]['vardas_pavarde'] = $cell->getFormattedValue();
+                    } else if ('D' == $cell->getColumn()) {
+                        $array_data[$rowIndex]['ak'] = $cell->getFormattedValue();
+                    } else if ('E' == $cell->getColumn()) {
+                        $array_data[$rowIndex]['0ak'] = $cell->getFormattedValue();
+                    } else if ('F' == $cell->getColumn()) {
+                        $array_data[$rowIndex]['gimimo_data'] = $cell->getFormattedValue();
+                    } else if ('G' == $cell->getColumn()) {
+                        $array_data[$rowIndex]['lytis'] = $cell->getFormattedValue();
+                    } else if ('H' == $cell->getColumn()) {
+                        $array_data[$rowIndex]['el_pastas'] = $this->removeLT($cell->getFormattedValue());
+                    } else if ('I' == $cell->getColumn()) {
+                        $array_data[$rowIndex]['tel'] = $cell->getFormattedValue();
+                    } else if ('J' == $cell->getColumn()) {
+                        $array_data[$rowIndex]['gatve'] = $cell->getFormattedValue();
+                    } else if ('K' == $cell->getColumn()) {
+                        $array_data[$rowIndex]['miestas'] = $cell->getFormattedValue();
+                    } else if ('L' == $cell->getColumn()) {
+                        $array_data[$rowIndex]['katedra'] = $cell->getFormattedValue();
+                    } else if ('M' == $cell->getColumn()) {
+                        $array_data[$rowIndex]['studiju_programa'] = $cell->getFormattedValue();
+                    } else if ('N' == $cell->getColumn()) {
+                        $array_data[$rowIndex]['kursas'] = $cell->getFormattedValue();
+                    } else if ('O' == $cell->getColumn()) {
+                        $array_data[$rowIndex]['studiju_pradzia'] = $cell->getFormattedValue();
+                    } else if ('P' == $cell->getColumn()) {
+                        $array_data[$rowIndex]['studiju_pabaiga'] = $cell->getFormattedValue();
+                    } else if ('Q' == $cell->getColumn()) {
+                        $array_data[$rowIndex]['lsp_numeris'] = $cell->getFormattedValue();
+                    } else if ('R' == $cell->getColumn()) {
+                        $array_data[$rowIndex]['ldap'] = $this->removeLT($cell->getFormattedValue());
+                    } else if ('S' == $cell->getColumn()) {
+                        $array_data[$rowIndex]['kalbos_kodas'] = $cell->getFormattedValue();
+                    } else if ('T' == $cell->getColumn()) {
+                        $array_data[$rowIndex]['statusas'] = $cell->getFormattedValue();
+                    } else if ('U' == $cell->getColumn()) {
+                        $array_data[$rowIndex]['profilio_kodas'] = $cell->getFormattedValue();
+                    } else if ('V' == $cell->getColumn()) {
+                        $array_data[$rowIndex]['bibl_filialo_kodas'] = $cell->getFormattedValue();
+                    } else if ('W' == $cell->getColumn()) {
+                        $array_data[$rowIndex]['adresas_irasytas'] = $cell->getFormattedValue();
+                    } else if ('X' == $cell->getColumn()) {
+                        $array_data[$rowIndex]['1metai'] = $cell->getFormattedValue();
+                    } else if ('Y' == $cell->getColumn()) {
+                        $array_data[$rowIndex]['atsitiktiniu_simboliu_seka'] = $cell->getFormattedValue();
+                    }
+                }
+            }
+        } elseif($type == 'darbuotojai'){
+            foreach ($rowIterator as $row) {
+                $cellIterator = $row->getCellIterator();
+                $cellIterator->setIterateOnlyExistingCells(false);
+                if (1 == $row->getRowIndex()) continue;
+                $rowIndex = $row->getRowIndex();
+                $array_data[$rowIndex] = array();
+
+                foreach ($cellIterator as $cell) {
+                    if ('A' == $cell->getColumn()) {
+                        $array_data[$rowIndex]['vardas'] = $cell->getFormattedValue();
+                    } else if ('B' == $cell->getColumn()) {
+                        $array_data[$rowIndex]['pavarde'] = $cell->getFormattedValue();
+                    } else if ('C' == $cell->getColumn()) {
+                        $array_data[$rowIndex]['ak_0'] = $cell->getFormattedValue();
+                    } else if ('D' == $cell->getColumn()) {
+                        $array_data[$rowIndex]['kalbos_kodas'] = $cell->getFormattedValue();
+                    } else if ('E' == $cell->getColumn()) {
+                        $array_data[$rowIndex]['vardas_pavarde'] = $cell->getFormattedValue();
+                    } else if ('F' == $cell->getColumn()) {
+                        $array_data[$rowIndex]['el_pastas'] = $this->removeLT($cell->getFormattedValue());
+                    } else if ('G' == $cell->getColumn()) {
+                        $array_data[$rowIndex]['profilio_kodas'] = $cell->getFormattedValue();
+                    } else if ('H' == $cell->getColumn()) {
+                        $array_data[$rowIndex]['bibliotekos_kodas'] = $cell->getFormattedValue();
+                    } else if ('I' == $cell->getColumn()) {
+                        $array_data[$rowIndex]['gimimo_data'] = $cell->getFormattedValue();
+                    } else if ('J' == $cell->getColumn()) {
+                        $array_data[$rowIndex]['lytis'] = $cell->getFormattedValue();
+                    } else if ('K' == $cell->getColumn()) {
+                        $array_data[$rowIndex]['padalinys'] = $cell->getFormattedValue();
+                    } else if ('L' == $cell->getColumn()) {
+                        $array_data[$rowIndex]['pareigos'] = $cell->getFormattedValue();
+                    } else if ('M' == $cell->getColumn()) {
+                        $array_data[$rowIndex]['statusas'] = $cell->getFormattedValue();
+                    } else if ('N' == $cell->getColumn()) {
+                        $array_data[$rowIndex]['pareigu_pradzia'] = $cell->getFormattedValue();
+                    } else if ('O' == $cell->getColumn()) {
+                        $array_data[$rowIndex]['1metai'] = $cell->getFormattedValue();
+                    } else if ('P' == $cell->getColumn()) {
+                        $array_data[$rowIndex]['teisiu_galiojimo_pabaiga'] = $cell->getFormattedValue();
+                    } else if ('Q' == $cell->getColumn()) {
+                        $array_data[$rowIndex]['ak'] = $cell->getFormattedValue();
+                    } else if ('R' == $cell->getColumn()) {
+                        $array_data[$rowIndex]['ldap'] = $this->removeLT($cell->getFormattedValue());
+                    } else if ('S' == $cell->getColumn()) {
+                        $array_data[$rowIndex]['atsitiktiniu_simboliu_seka'] = $cell->getFormattedValue();
+                    }
                 }
             }
         }
@@ -168,188 +247,358 @@ class Converter{
         exit($data);
     }
 
-    private function prepareContent($data){
+    private function prepareContent($data, $type){
         $doc = new DOMDocument('1.0', 'UTF-8');
         $doc->formatOutput = true;
 
         $root = $doc->createElement('p-file-20');
         $root = $doc->appendChild($root);
 
-        foreach($data as $person){
-            $patron = $doc->createElement('patron-record');
-            $patron = $root->appendChild($patron);
+        if($type == 'studentai') {
 
-            $z303 = $doc->createElement('z303');
-            $z303 = $patron->appendChild($z303);
+            foreach ($data as $person) {
+                $patron = $doc->createElement('patron-record');
+                $patron = $root->appendChild($patron);
 
-            $z303->appendChild($doc->createElement('record-action', 'A'));
-            $z303->appendChild($doc->createElement('match-id-type', '01'));
-            $z303->appendChild($doc->createElement('match-id', '0'.$person['ak']));
-            $z303->appendChild($doc->createElement('z303-id', '0'.$person['ak']));
-            $z303->appendChild($doc->createElement('z303-user-type', 'REG'));
-            $z303->appendChild($doc->createElement('z303-con-lng', $person['kalbos_kodas']));
-            $z303->appendChild($doc->createElement('z303-alpha', 'L'));
-            $z303->appendChild($doc->createElement('z303-first-name', $person['vardas']));
-            $z303->appendChild($doc->createElement('z303-last-name', $person['pavarde']));
-            $z303->appendChild($doc->createElement('z303-title', $person['statusas']));
-            $z303->appendChild($doc->createElement('z303-delinq-1', '00'));
-            $z303->appendChild($doc->createElement('z303-delinq-n-1', ''));
-            $z303->appendChild($doc->createElement('z303-delinq-3', '00'));
-            $z303->appendChild($doc->createElement('z303-delinq-n-3', '+'));
-            $z303->appendChild($doc->createElement('z303-budget', ''));
-            $z303->appendChild($doc->createElement('z303-profile', $person['profilio_kodas']));
-            $z303->appendChild($doc->createElement('z303-ill-library', ''));
-            $z303->appendChild($doc->createElement('z303-home-library', $person['bibl_filialo_kodas']));
-            $z303->appendChild($doc->createElement('z303-note-1', '+'));
-            $z303->appendChild($doc->createElement('z303-ill-total-limit', '0000'));
-            $z303->appendChild($doc->createElement('z303-ill-active-limit', '0000'));
-            $z303->appendChild($doc->createElement('z303-birth-date', $person['gimimo_data']));
-            $z303->appendChild($doc->createElement('z303-export-consent', 'Y'));
-            $z303->appendChild($doc->createElement('z303-proxy-id-type', '00'));
-            $z303->appendChild($doc->createElement('z303-send-all-letters', 'Y'));
-            $z303->appendChild($doc->createElement('z303-plain-html', 'H'));
-            $z303->appendChild($doc->createElement('z303-want-sms', 'N'));
-            $z303->appendChild($doc->createElement('z303-title-req-limit', '0099'));
-            $z303->appendChild($doc->createElement('z303-gender', 'lytis'));
-            $z303->appendChild($doc->createElement('z303-birthplace', ''));
+                $z303 = $doc->createElement('z303');
+                $z303 = $patron->appendChild($z303);
 
-
-            $z304 = $doc->createElement('z304');
-            $z304 = $patron->appendChild($z304);
-
-            $z304->appendChild($doc->createElement('record-action', 'A'));
-            $z304->appendChild($doc->createElement('z304-id', '0'.$person['ak']));
-            $z304->appendChild($doc->createElement('z304-sequence', '01'));
-            $z304->appendChild($doc->createElement('z304-address-0', $person['vardas_pavarde']));
-            $z304->appendChild($doc->createElement('z304-address-1', $person['gatve']));
-            $z304->appendChild($doc->createElement('z304-address-2', $person['miestas']));
-            $z304->appendChild($doc->createElement('z304-address-3', ''));
-            $z304->appendChild($doc->createElement('z304-address-4', ''));
-            $z304->appendChild($doc->createElement('z304-zip', ''));
-            $z304->appendChild($doc->createElement('z304-email-address', $person['el_pastas']));
-            $z304->appendChild($doc->createElement('z304-telephone', $person['tel']));
-            $z304->appendChild($doc->createElement('z304-date-from', $person['adresas_irasytas']));
-            $z304->appendChild($doc->createElement('z304-date-to', $person['1metai']));
-            $z304->appendChild($doc->createElement('z304-address-type', '01'));
-            $z304->appendChild($doc->createElement('z304-telephone-2', ''));
-            $z304->appendChild($doc->createElement('z304-telephone-3', ''));
-            $z304->appendChild($doc->createElement('z304-telephone-4', ''));
+                $z303->appendChild($doc->createElement('record-action', 'A'));
+                $z303->appendChild($doc->createElement('match-id-type', '01'));
+                $z303->appendChild($doc->createElement('match-id', '0' . $person['ak']));
+                $z303->appendChild($doc->createElement('z303-id', '0' . $person['ak']));
+                $z303->appendChild($doc->createElement('z303-user-type', 'REG'));
+                $z303->appendChild($doc->createElement('z303-con-lng', $person['kalbos_kodas']));
+                $z303->appendChild($doc->createElement('z303-alpha', 'L'));
+                $z303->appendChild($doc->createElement('z303-first-name', $person['vardas']));
+                $z303->appendChild($doc->createElement('z303-last-name', $person['pavarde']));
+                $z303->appendChild($doc->createElement('z303-title', $person['statusas']));
+                $z303->appendChild($doc->createElement('z303-delinq-1', '00'));
+                $z303->appendChild($doc->createElement('z303-delinq-n-1', ''));
+                $z303->appendChild($doc->createElement('z303-delinq-3', '00'));
+                $z303->appendChild($doc->createElement('z303-delinq-n-3', '+'));
+                $z303->appendChild($doc->createElement('z303-budget', ''));
+                $z303->appendChild($doc->createElement('z303-profile-id', $person['profilio_kodas']));
+                $z303->appendChild($doc->createElement('z303-ill-library', ''));
+                $z303->appendChild($doc->createElement('z303-home-library', $person['bibl_filialo_kodas']));
+                $z303->appendChild($doc->createElement('z303-note-1', '+'));
+                $z303->appendChild($doc->createElement('z303-ill-total-limit', '0000'));
+                $z303->appendChild($doc->createElement('z303-ill-active-limit', '0000'));
+                $z303->appendChild($doc->createElement('z303-birth-date', $person['gimimo_data']));
+                $z303->appendChild($doc->createElement('z303-export-consent', 'Y'));
+                $z303->appendChild($doc->createElement('z303-proxy-id-type', '00'));
+                $z303->appendChild($doc->createElement('z303-send-all-letters', 'Y'));
+                $z303->appendChild($doc->createElement('z303-plain-html', 'H'));
+                $z303->appendChild($doc->createElement('z303-want-sms', 'N'));
+                $z303->appendChild($doc->createElement('z303-title-req-limit', '0099'));
+                $z303->appendChild($doc->createElement('z303-gender', $person['lytis']));
+                $z303->appendChild($doc->createElement('z303-birthplace', ''));
 
 
-            $z304 = $doc->createElement('z304');
-            $z304 = $patron->appendChild($z304);
+                $z304 = $doc->createElement('z304');
+                $z304 = $patron->appendChild($z304);
 
-            $z304->appendChild($doc->createElement('record-action', 'A'));
-            $z304->appendChild($doc->createElement('z304-id', '0'.$person['ak']));
-            $z304->appendChild($doc->createElement('z304-sequence', '02'));
-            $z304->appendChild($doc->createElement('z304-address-0', $person['vardas_pavarde']));
-            $z304->appendChild($doc->createElement('z304-address-1', $person['studiju_programa']));
-            $z304->appendChild($doc->createElement('z304-address-2', $person['katedra']));
-            $z304->appendChild($doc->createElement('z304-address-3', $person['statusas'] == 'Stud.' ? 'Studentas' : 'Dėstytojas'));
-            $z304->appendChild($doc->createElement('z304-address-4', ''));
-            $z304->appendChild($doc->createElement('z304-zip', ''));
-            $z304->appendChild($doc->createElement('z304-email-address', $person['el_pastas']));
-            $z304->appendChild($doc->createElement('z304-telephone', $person['tel']));
-            $z304->appendChild($doc->createElement('z304-date-from', $person['studiju_pradzia']));
-            $z304->appendChild($doc->createElement('z304-date-to', $person['1metai']));
-            $z304->appendChild($doc->createElement('z304-address-type', '02'));
-            $z304->appendChild($doc->createElement('z304-telephone-2', ''));
-            $z304->appendChild($doc->createElement('z304-telephone-3', ''));
-            $z304->appendChild($doc->createElement('z304-telephone-4', ''));
-
-
-            $z305 = $doc->createElement('z305');
-            $z305 = $patron->appendChild($z305);
-
-            $z305->appendChild($doc->createElement('record-action', 'A'));
-            $z305->appendChild($doc->createElement('z305-id', '0'.$person['ak']));
-            $z305->appendChild($doc->createElement('z305-sub-library', 'KTU50'));
-            $z305->appendChild($doc->createElement('z305-bor-type', 'DA'));
-            $z305->appendChild($doc->createElement('z305-bor-status', '01'));
-            $z305->appendChild($doc->createElement('z305-registration-date', '0'.$person['studiju_pradzia']));
-            $z305->appendChild($doc->createElement('z305-expiry-date', ''));
+                $z304->appendChild($doc->createElement('record-action', 'A'));
+                $z304->appendChild($doc->createElement('z304-id', '0' . $person['ak']));
+                $z304->appendChild($doc->createElement('z304-sequence', '01'));
+                $z304->appendChild($doc->createElement('z304-address-0', $person['vardas_pavarde']));
+                $z304->appendChild($doc->createElement('z304-address-1', $person['gatve']));
+                $z304->appendChild($doc->createElement('z304-address-2', $person['miestas']));
+                $z304->appendChild($doc->createElement('z304-address-3', ''));
+                $z304->appendChild($doc->createElement('z304-address-4', ''));
+                $z304->appendChild($doc->createElement('z304-zip', ''));
+                $z304->appendChild($doc->createElement('z304-email-address', $person['el_pastas']));
+                $z304->appendChild($doc->createElement('z304-telephone', $person['tel']));
+                $z304->appendChild($doc->createElement('z304-date-from', $person['adresas_irasytas']));
+                $z304->appendChild($doc->createElement('z304-date-to', $person['1metai']));
+                $z304->appendChild($doc->createElement('z304-address-type', '01'));
+                $z304->appendChild($doc->createElement('z304-telephone-2', ''));
+                $z304->appendChild($doc->createElement('z304-telephone-3', ''));
+                $z304->appendChild($doc->createElement('z304-telephone-4', ''));
 
 
-            $z305 = $doc->createElement('z305');
-            $z305 = $patron->appendChild($z305);
+                $z304 = $doc->createElement('z304');
+                $z304 = $patron->appendChild($z304);
 
-            $z305->appendChild($doc->createElement('record-action', 'A'));
-            $z305->appendChild($doc->createElement('z305-id', '0'.$person['ak']));
-            $z305->appendChild($doc->createElement('z305-sub-library', 'KTUCB'));
-            $z305->appendChild($doc->createElement('z305-bor-type', 'DA'));
-            $z305->appendChild($doc->createElement('z305-bor-status', '01'));
-            $z305->appendChild($doc->createElement('z305-registration-date', '0'.$person['studiju_pradzia']));
-            $z305->appendChild($doc->createElement('z305-expiry-date', ''));
-
-
-            $z305 = $doc->createElement('z305');
-            $z305 = $patron->appendChild($z305);
-
-            $z305->appendChild($doc->createElement('record-action', 'A'));
-            $z305->appendChild($doc->createElement('z305-id', '0'.$person['ak']));
-            $z305->appendChild($doc->createElement('z305-sub-library', 'KTUIF'));
-            $z305->appendChild($doc->createElement('z305-bor-type', 'DA'));
-            $z305->appendChild($doc->createElement('z305-bor-status', '01'));
-            $z305->appendChild($doc->createElement('z305-registration-date', '0'.$person['studiju_pradzia']));
-            $z305->appendChild($doc->createElement('z305-expiry-date', ''));
+                $z304->appendChild($doc->createElement('record-action', 'A'));
+                $z304->appendChild($doc->createElement('z304-id', '0' . $person['ak']));
+                $z304->appendChild($doc->createElement('z304-sequence', '02'));
+                $z304->appendChild($doc->createElement('z304-address-0', $person['vardas_pavarde']));
+                $z304->appendChild($doc->createElement('z304-address-1', $person['studiju_programa']));
+                $z304->appendChild($doc->createElement('z304-address-2', $person['katedra']));
+                $z304->appendChild($doc->createElement('z304-address-3', $person['statusas'] == 'Stud.' ? 'Studentas' : 'Dėstytojas'));
+                $z304->appendChild($doc->createElement('z304-address-4', ''));
+                $z304->appendChild($doc->createElement('z304-zip', ''));
+                $z304->appendChild($doc->createElement('z304-email-address', $person['el_pastas']));
+                $z304->appendChild($doc->createElement('z304-telephone', $person['tel']));
+                $z304->appendChild($doc->createElement('z304-date-from', $person['studiju_pradzia']));
+                $z304->appendChild($doc->createElement('z304-date-to', $person['1metai']));
+                $z304->appendChild($doc->createElement('z304-address-type', '02'));
+                $z304->appendChild($doc->createElement('z304-telephone-2', ''));
+                $z304->appendChild($doc->createElement('z304-telephone-3', ''));
+                $z304->appendChild($doc->createElement('z304-telephone-4', ''));
 
 
-            $z305 = $doc->createElement('z305');
-            $z305 = $patron->appendChild($z305);
+                $z305 = $doc->createElement('z305');
+                $z305 = $patron->appendChild($z305);
 
-            $z305->appendChild($doc->createElement('record-action', 'A'));
-            $z305->appendChild($doc->createElement('z305-id', '0'.$person['ak']));
-            $z305->appendChild($doc->createElement('z305-sub-library', 'KTUMD'));
-            $z305->appendChild($doc->createElement('z305-bor-type', 'DA'));
-            $z305->appendChild($doc->createElement('z305-bor-status', '01'));
-            $z305->appendChild($doc->createElement('z305-registration-date', '0'.$person['studiju_pradzia']));
-            $z305->appendChild($doc->createElement('z305-expiry-date', ''));
-
-
-            $z308 = $doc->createElement('z308');
-            $z308 = $patron->appendChild($z308);
-
-            $z308->appendChild($doc->createElement('record-action', 'A'));
-            $z308->appendChild($doc->createElement('z308-key-type', '01'));
-            $z308->appendChild($doc->createElement('z308-key-data', '0'.strtoupper($person['ak'])));
-            $z308->appendChild($doc->createElement('z308-verification', $person['atsitiktiniu_simboliu_seka']));
-            $z308->appendChild($doc->createElement('z308-verification-type', '00'));
-            $z308->appendChild($doc->createElement('z308-status', 'AC'));
-            $z308->appendChild($doc->createElement('z308-encryption', 'H'));
+                $z305->appendChild($doc->createElement('record-action', 'A'));
+                $z305->appendChild($doc->createElement('z305-id', '0' . $person['ak']));
+                $z305->appendChild($doc->createElement('z305-sub-library', 'KTU50'));
+                $z305->appendChild($doc->createElement('z305-bor-type', 'DA'));
+                $z305->appendChild($doc->createElement('z305-bor-status', '01'));
+                $z305->appendChild($doc->createElement('z305-registration-date', $person['studiju_pradzia']));
+                $z305->appendChild($doc->createElement('z305-expiry-date', $person['studiju_pabaiga']));
 
 
-            $z308 = $doc->createElement('z308');
-            $z308 = $patron->appendChild($z308);
+                $z305 = $doc->createElement('z305');
+                $z305 = $patron->appendChild($z305);
 
-            $z308->appendChild($doc->createElement('record-action', 'A'));
-            $z308->appendChild($doc->createElement('z308-key-type', '02'));
-            $z308->appendChild($doc->createElement('z308-key-data', strtoupper($person['ak'])));
-            $z308->appendChild($doc->createElement('z308-verification', $person['atsitiktiniu_simboliu_seka']));
-            $z308->appendChild($doc->createElement('z308-verification-type', '00'));
-            $z308->appendChild($doc->createElement('z308-status', 'AC'));
-            $z308->appendChild($doc->createElement('z308-encryption', 'H'));
-
-
-            $z308 = $doc->createElement('z308');
-            $z308 = $patron->appendChild($z308);
-
-            $z308->appendChild($doc->createElement('record-action', 'A'));
-            $z308->appendChild($doc->createElement('z308-key-type', '07'));
-            $z308->appendChild($doc->createElement('z308-key-data', $person['ldap']));
-            $z308->appendChild($doc->createElement('z308-verification', substr($person['ak'], -4)));
-            $z308->appendChild($doc->createElement('z308-verification-type', '00'));
-            $z308->appendChild($doc->createElement('z308-status', 'AC'));
-            $z308->appendChild($doc->createElement('z308-encryption', 'H'));
+                $z305->appendChild($doc->createElement('record-action', 'A'));
+                $z305->appendChild($doc->createElement('z305-id', '0' . $person['ak']));
+                $z305->appendChild($doc->createElement('z305-sub-library', 'KTUCB'));
+                $z305->appendChild($doc->createElement('z305-bor-type', 'DA'));
+                $z305->appendChild($doc->createElement('z305-bor-status', '01'));
+                $z305->appendChild($doc->createElement('z305-registration-date', $person['studiju_pradzia']));
+                $z305->appendChild($doc->createElement('z305-expiry-date', $person['studiju_pabaiga']));
 
 
-            if($person['lsp_numeris']){
+                $z305 = $doc->createElement('z305');
+                $z305 = $patron->appendChild($z305);
+
+                $z305->appendChild($doc->createElement('record-action', 'A'));
+                $z305->appendChild($doc->createElement('z305-id', '0' . $person['ak']));
+                $z305->appendChild($doc->createElement('z305-sub-library', 'KTUIF'));
+                $z305->appendChild($doc->createElement('z305-bor-type', 'DA'));
+                $z305->appendChild($doc->createElement('z305-bor-status', '01'));
+                $z305->appendChild($doc->createElement('z305-registration-date', $person['studiju_pradzia']));
+                $z305->appendChild($doc->createElement('z305-expiry-date', $person['studiju_pabaiga']));
+
+
+                $z305 = $doc->createElement('z305');
+                $z305 = $patron->appendChild($z305);
+
+                $z305->appendChild($doc->createElement('record-action', 'A'));
+                $z305->appendChild($doc->createElement('z305-id', '0' . $person['ak']));
+                $z305->appendChild($doc->createElement('z305-sub-library', 'KTUMD'));
+                $z305->appendChild($doc->createElement('z305-bor-type', 'DA'));
+                $z305->appendChild($doc->createElement('z305-bor-status', '01'));
+                $z305->appendChild($doc->createElement('z305-registration-date', $person['studiju_pradzia']));
+                $z305->appendChild($doc->createElement('z305-expiry-date', $person['studiju_pabaiga']));
+
+
                 $z308 = $doc->createElement('z308');
                 $z308 = $patron->appendChild($z308);
 
                 $z308->appendChild($doc->createElement('record-action', 'A'));
-                $z308->appendChild($doc->createElement('z308-key-type', '08'));
-                $z308->appendChild($doc->createElement('z308-key-data', strtoupper($person['lsp_numeris'])));
+                $z308->appendChild($doc->createElement('z308-key-type', '01'));
+                $z308->appendChild($doc->createElement('z308-key-data', '0' . strtoupper($person['ak'])));
                 $z308->appendChild($doc->createElement('z308-verification', $person['atsitiktiniu_simboliu_seka']));
+                $z308->appendChild($doc->createElement('z308-verification-type', '00'));
+                $z308->appendChild($doc->createElement('z308-status', 'AC'));
+                $z308->appendChild($doc->createElement('z308-encryption', 'H'));
+
+
+                $z308 = $doc->createElement('z308');
+                $z308 = $patron->appendChild($z308);
+
+                $z308->appendChild($doc->createElement('record-action', 'A'));
+                $z308->appendChild($doc->createElement('z308-key-type', '02'));
+                $z308->appendChild($doc->createElement('z308-key-data', strtoupper($person['ak'])));
+                $z308->appendChild($doc->createElement('z308-verification', $person['atsitiktiniu_simboliu_seka']));
+                $z308->appendChild($doc->createElement('z308-verification-type', '00'));
+                $z308->appendChild($doc->createElement('z308-status', 'AC'));
+                $z308->appendChild($doc->createElement('z308-encryption', 'H'));
+
+
+                $z308 = $doc->createElement('z308');
+                $z308 = $patron->appendChild($z308);
+
+                $z308->appendChild($doc->createElement('record-action', 'A'));
+                $z308->appendChild($doc->createElement('z308-key-type', '07'));
+                $z308->appendChild($doc->createElement('z308-key-data', strtoupper($person['ldap'])));
+                $z308->appendChild($doc->createElement('z308-verification', substr($person['ak'], -4)));
+                $z308->appendChild($doc->createElement('z308-verification-type', '00'));
+                $z308->appendChild($doc->createElement('z308-status', 'AC'));
+                $z308->appendChild($doc->createElement('z308-encryption', 'H'));
+
+
+                if ($person['lsp_numeris']) {
+                    $z308 = $doc->createElement('z308');
+                    $z308 = $patron->appendChild($z308);
+
+                    $z308->appendChild($doc->createElement('record-action', 'A'));
+                    $z308->appendChild($doc->createElement('z308-key-type', '08'));
+                    $z308->appendChild($doc->createElement('z308-key-data', strtoupper($person['lsp_numeris'])));
+                    $z308->appendChild($doc->createElement('z308-verification', $person['atsitiktiniu_simboliu_seka']));
+                    $z308->appendChild($doc->createElement('z308-verification-type', '00'));
+                    $z308->appendChild($doc->createElement('z308-status', 'AC'));
+                    $z308->appendChild($doc->createElement('z308-encryption', 'H'));
+                }
+            }
+        } elseif($type == 'darbuotojai') {
+            foreach ($data as $person) {
+                $patron = $doc->createElement('patron-record');
+                $patron = $root->appendChild($patron);
+
+                $z303 = $doc->createElement('z303');
+                $z303 = $patron->appendChild($z303);
+
+                $z303->appendChild($doc->createElement('record-action', 'A'));
+                $z303->appendChild($doc->createElement('match-id-type', '01'));
+                $z303->appendChild($doc->createElement('match-id', '0' . $person['ak']));
+                $z303->appendChild($doc->createElement('z303-id', '0' . $person['ak']));
+                $z303->appendChild($doc->createElement('z303-user-type', 'REG'));
+                $z303->appendChild($doc->createElement('z303-con-lng', $person['kalbos_kodas']));
+                $z303->appendChild($doc->createElement('z303-alpha', 'L'));
+                $z303->appendChild($doc->createElement('z303-first-name', $person['vardas']));
+                $z303->appendChild($doc->createElement('z303-last-name', $person['pavarde']));
+                $z303->appendChild($doc->createElement('z303-title', $person['statusas']));
+                $z303->appendChild($doc->createElement('z303-delinq-1', '00'));
+                $z303->appendChild($doc->createElement('z303-delinq-n-1', ''));
+                $z303->appendChild($doc->createElement('z303-delinq-3', '00'));
+                $z303->appendChild($doc->createElement('z303-delinq-n-3', '+'));
+                $z303->appendChild($doc->createElement('z303-budget', ''));
+                $z303->appendChild($doc->createElement('z303-profile-id', $person['profilio_kodas']));
+                $z303->appendChild($doc->createElement('z303-ill-library', ''));
+                $z303->appendChild($doc->createElement('z303-home-library', $person['bibliotekos_kodas']));
+                $z303->appendChild($doc->createElement('z303-note-1', '+'));
+                $z303->appendChild($doc->createElement('z303-ill-total-limit', '0000'));
+                $z303->appendChild($doc->createElement('z303-ill-active-limit', '0000'));
+                $z303->appendChild($doc->createElement('z303-birth-date', $person['gimimo_data']));
+                $z303->appendChild($doc->createElement('z303-export-consent', 'Y'));
+                $z303->appendChild($doc->createElement('z303-proxy-id-type', '00'));
+                $z303->appendChild($doc->createElement('z303-send-all-letters', 'Y'));
+                $z303->appendChild($doc->createElement('z303-plain-html', 'H'));
+                $z303->appendChild($doc->createElement('z303-want-sms', 'N'));
+                $z303->appendChild($doc->createElement('z303-title-req-limit', '0099'));
+                $z303->appendChild($doc->createElement('z303-gender', $person['lytis']));
+                $z303->appendChild($doc->createElement('z303-birthplace', ''));
+
+
+                $z304 = $doc->createElement('z304');
+                $z304 = $patron->appendChild($z304);
+
+                $z304->appendChild($doc->createElement('record-action', 'A'));
+                $z304->appendChild($doc->createElement('z304-id', '0' . $person['ak']));
+                $z304->appendChild($doc->createElement('z304-sequence', '01'));
+                $z304->appendChild($doc->createElement('z304-address-0', $person['vardas_pavarde']));
+                $z304->appendChild($doc->createElement('z304-address-1', ''));
+                $z304->appendChild($doc->createElement('z304-address-2', ''));
+                $z304->appendChild($doc->createElement('z304-address-3', ''));
+                $z304->appendChild($doc->createElement('z304-address-4', ''));
+                $z304->appendChild($doc->createElement('z304-zip', ''));
+                $z304->appendChild($doc->createElement('z304-email-address', $person['el_pastas']));
+                $z304->appendChild($doc->createElement('z304-telephone', ''));
+                $z304->appendChild($doc->createElement('z304-date-from', $person['pareigu_pradzia']));
+                $z304->appendChild($doc->createElement('z304-date-to', $person['1metai']));
+                $z304->appendChild($doc->createElement('z304-address-type', '01'));
+                $z304->appendChild($doc->createElement('z304-telephone-2', ''));
+                $z304->appendChild($doc->createElement('z304-telephone-3', ''));
+                $z304->appendChild($doc->createElement('z304-telephone-4', ''));
+
+
+                $z304 = $doc->createElement('z304');
+                $z304 = $patron->appendChild($z304);
+
+                $z304->appendChild($doc->createElement('record-action', 'A'));
+                $z304->appendChild($doc->createElement('z304-id', '0' . $person['ak']));
+                $z304->appendChild($doc->createElement('z304-sequence', '02'));
+                $z304->appendChild($doc->createElement('z304-address-0', $person['vardas_pavarde']));
+                $z304->appendChild($doc->createElement('z304-address-1', $person['padalinys']));
+                $z304->appendChild($doc->createElement('z304-address-2', $person['pareigos']));
+                $z304->appendChild($doc->createElement('z304-address-3', ''));
+                $z304->appendChild($doc->createElement('z304-address-4', ''));
+                $z304->appendChild($doc->createElement('z304-zip', ''));
+                $z304->appendChild($doc->createElement('z304-email-address', $person['el_pastas']));
+                $z304->appendChild($doc->createElement('z304-telephone', ''));
+                $z304->appendChild($doc->createElement('z304-date-from', $person['pareigu_pradzia']));
+                $z304->appendChild($doc->createElement('z304-date-to', $person['1metai']));
+                $z304->appendChild($doc->createElement('z304-address-type', '02'));
+                $z304->appendChild($doc->createElement('z304-telephone-2', ''));
+                $z304->appendChild($doc->createElement('z304-telephone-3', ''));
+                $z304->appendChild($doc->createElement('z304-telephone-4', ''));
+
+
+                $z305 = $doc->createElement('z305');
+                $z305 = $patron->appendChild($z305);
+
+                $z305->appendChild($doc->createElement('record-action', 'A'));
+                $z305->appendChild($doc->createElement('z305-id', '0' . $person['ak']));
+                $z305->appendChild($doc->createElement('z305-sub-library', 'KTU50'));
+                $z305->appendChild($doc->createElement('z305-bor-type', 'DA'));
+                $z305->appendChild($doc->createElement('z305-bor-status', '01'));
+                $z305->appendChild($doc->createElement('z305-registration-date', $person['pareigu_pradzia']));
+                $z305->appendChild($doc->createElement('z305-expiry-date', $person['teisiu_galiojimo_pabaiga']));
+
+
+                $z305 = $doc->createElement('z305');
+                $z305 = $patron->appendChild($z305);
+
+                $z305->appendChild($doc->createElement('record-action', 'A'));
+                $z305->appendChild($doc->createElement('z305-id', '0' . $person['ak']));
+                $z305->appendChild($doc->createElement('z305-sub-library', 'KTUCB'));
+                $z305->appendChild($doc->createElement('z305-bor-type', 'DA'));
+                $z305->appendChild($doc->createElement('z305-bor-status', '01'));
+                $z305->appendChild($doc->createElement('z305-registration-date', $person['pareigu_pradzia']));
+                $z305->appendChild($doc->createElement('z305-expiry-date', $person['teisiu_galiojimo_pabaiga']));
+
+
+                $z305 = $doc->createElement('z305');
+                $z305 = $patron->appendChild($z305);
+
+                $z305->appendChild($doc->createElement('record-action', 'A'));
+                $z305->appendChild($doc->createElement('z305-id', '0' . $person['ak']));
+                $z305->appendChild($doc->createElement('z305-sub-library', 'KTUIF'));
+                $z305->appendChild($doc->createElement('z305-bor-type', 'DA'));
+                $z305->appendChild($doc->createElement('z305-bor-status', '01'));
+                $z305->appendChild($doc->createElement('z305-registration-date', $person['pareigu_pradzia']));
+                $z305->appendChild($doc->createElement('z305-expiry-date', $person['teisiu_galiojimo_pabaiga']));
+
+
+                $z305 = $doc->createElement('z305');
+                $z305 = $patron->appendChild($z305);
+
+                $z305->appendChild($doc->createElement('record-action', 'A'));
+                $z305->appendChild($doc->createElement('z305-id', '0' . $person['ak']));
+                $z305->appendChild($doc->createElement('z305-sub-library', 'KTUMD'));
+                $z305->appendChild($doc->createElement('z305-bor-type', 'DA'));
+                $z305->appendChild($doc->createElement('z305-bor-status', '01'));
+                $z305->appendChild($doc->createElement('z305-registration-date', $person['pareigu_pradzia']));
+                $z305->appendChild($doc->createElement('z305-expiry-date', $person['teisiu_galiojimo_pabaiga']));
+
+
+                $z308 = $doc->createElement('z308');
+                $z308 = $patron->appendChild($z308);
+
+                $z308->appendChild($doc->createElement('record-action', 'A'));
+                $z308->appendChild($doc->createElement('z308-key-type', '01'));
+                $z308->appendChild($doc->createElement('z308-key-data', '0' . strtoupper($person['ak'])));
+                $z308->appendChild($doc->createElement('z308-verification', $person['atsitiktiniu_simboliu_seka']));
+                $z308->appendChild($doc->createElement('z308-verification-type', '00'));
+                $z308->appendChild($doc->createElement('z308-status', 'AC'));
+                $z308->appendChild($doc->createElement('z308-encryption', 'H'));
+
+
+                $z308 = $doc->createElement('z308');
+                $z308 = $patron->appendChild($z308);
+
+                $z308->appendChild($doc->createElement('record-action', 'A'));
+                $z308->appendChild($doc->createElement('z308-key-type', '02'));
+                $z308->appendChild($doc->createElement('z308-key-data', strtoupper($person['ak'])));
+                $z308->appendChild($doc->createElement('z308-verification', $person['atsitiktiniu_simboliu_seka']));
+                $z308->appendChild($doc->createElement('z308-verification-type', '00'));
+                $z308->appendChild($doc->createElement('z308-status', 'AC'));
+                $z308->appendChild($doc->createElement('z308-encryption', 'H'));
+
+
+                $z308 = $doc->createElement('z308');
+                $z308 = $patron->appendChild($z308);
+
+                $z308->appendChild($doc->createElement('record-action', 'A'));
+                $z308->appendChild($doc->createElement('z308-key-type', '07'));
+                $z308->appendChild($doc->createElement('z308-key-data', strtoupper($person['ldap'])));
+                $z308->appendChild($doc->createElement('z308-verification', substr($person['ak'], -4)));
                 $z308->appendChild($doc->createElement('z308-verification-type', '00'));
                 $z308->appendChild($doc->createElement('z308-status', 'AC'));
                 $z308->appendChild($doc->createElement('z308-encryption', 'H'));
@@ -359,15 +608,15 @@ class Converter{
         $this->content = $doc->saveXML();
     }
 
-    private function downloadXML(){
+    private function downloadXML($type){
         ob_clean();
-        $this->downloader($this->content, 'database.xml', 'application/xml');
+        $this->downloader($this->content, $type.'.xml', 'application/xml');
     }
 
-    function makeXML(){
+    function makeXML($type = 'studentai'){
         $this->initExcelFile();
-        $excelArray = $this->getArray();
-        $this->prepareContent($excelArray);
-        $this->downloadXML();
+        $excelArray = $this->getArray($type);
+        $this->prepareContent($excelArray, $type);
+        $this->downloadXML($type);
     }
 }
