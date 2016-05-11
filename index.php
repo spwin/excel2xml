@@ -45,6 +45,16 @@
         .mt-20px{
             margin-top: 20px;
         }
+        .filialai label{
+            display: block;
+            margin-top: 15px;
+        }
+        .filialai .row{
+            margin-top: 10px;
+        }
+        .hidden {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -52,6 +62,22 @@
     <form action="" method="post" enctype="multipart/form-data">
         <label class="main">Select Excel file:</label>
         <input type="file" name="upfile" id="upfile">
+        <div class="filialai row mt-20px">
+            <label for="bendras">Administracinė bibliotekėlė:</label>
+            <div class="row">
+                <input id="bendras" type="text" value="KK550" name="bendras" required>
+            </div>
+            <label for="filialas[]">Bibliotekos filialai:</label>
+            <div class="row">
+                <div class="row">
+                    <input id="filialas_1" type="text" value="KK5CB" name="filialas[]" required>
+                </div>
+            </div>
+            <div class="items" id="items"></div>
+            <div class="row">
+                <button id="add_filialas">Pridėti filialą</button>
+            </div>
+        </div>
         <div class="row mt-20px">
             <input id="studentai" checked type="radio" name="type" value="studentai">
             <label for="studentai">Studentai</label>
@@ -73,14 +99,32 @@
         require_once dirname(__FILE__) . '/Classes/PHPExcel.php';
 
         $converter = new Converter();
+        $validate = $converter->validateInput($_POST);
         $error = $converter->checkFile($_FILES['upfile']);
-        if (!$error) {
+        if (!$error && $validate['pass']) {
             $converter->makeXML($_POST['type']);
         } else {
+            echo $validate['error'];
             echo $error;
         }
     }
     ?>
 
+    <div id="new_filialas" class="hidden">
+        <div class="row">
+            <input type="text" value="" name="filialas[]">
+            <button id="remove" onclick="this.parentNode.parentNode.removeChild(this.parentNode);">Pašalinti</button>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        (function() {
+            document.getElementById("add_filialas").onclick = function(event){
+                event.preventDefault();
+                var theDiv = document.getElementById("items");
+                theDiv.appendChild(document.getElementById("new_filialas").firstElementChild.cloneNode(true));
+            };
+        })();
+    </script>
 </body>
 </html>

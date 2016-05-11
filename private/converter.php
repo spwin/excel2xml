@@ -4,9 +4,33 @@ class Converter{
     private $file;
     private $objExcel;
     private $content;
-    
+    private $filialai = [];
+
     function __construct(){}
-    
+
+    function validateInput($input){
+        $validate = [
+            'pass' => true,
+            'error' => ''
+        ];
+        if(array_key_exists('filialas', $input) && array_key_exists('bendras', $input)){
+            $this->filialai['bendras'] = $input['bendras'];
+            foreach($input['filialas'] as $filialas){
+                if($filialas != '') {
+                    $this->filialai['filialai'][] = $filialas;
+                }
+            }
+            if(count($this->filialai['filialai']) < 1){
+                $validate['pass'] = false;
+                $validate['error'] = 'Field cannot be empty';
+            }
+        } else {
+            $validate['pass'] = false;
+            $validate['error'] = 'Invalid input filialai';
+        }
+        return $validate;
+    }
+
     function checkFile($file){
         try {
 
@@ -344,59 +368,24 @@ class Converter{
 
                 $z305->appendChild($doc->createElement('record-action', 'A'));
                 $z305->appendChild($doc->createElement('z305-id', '0' . $person['ak']));
-                $z305->appendChild($doc->createElement('z305-sub-library', 'KTU50'));
-                $z305->appendChild($doc->createElement('z305-bor-type', 'DA'));
+                $z305->appendChild($doc->createElement('z305-sub-library', $this->filialai['bendras']));
+                $z305->appendChild($doc->createElement('z305-bor-type', 'ST'));
                 $z305->appendChild($doc->createElement('z305-bor-status', '01'));
                 $z305->appendChild($doc->createElement('z305-registration-date', $person['studiju_pradzia']));
                 $z305->appendChild($doc->createElement('z305-expiry-date', $person['studiju_pabaiga']));
 
+                foreach($this->filialai['filialai'] as $filialas){
+                    $z305 = $doc->createElement('z305');
+                    $z305 = $patron->appendChild($z305);
 
-                $z305 = $doc->createElement('z305');
-                $z305 = $patron->appendChild($z305);
-
-                $z305->appendChild($doc->createElement('record-action', 'A'));
-                $z305->appendChild($doc->createElement('z305-id', '0' . $person['ak']));
-                $z305->appendChild($doc->createElement('z305-sub-library', 'KTUCB'));
-                $z305->appendChild($doc->createElement('z305-bor-type', 'DA'));
-                $z305->appendChild($doc->createElement('z305-bor-status', '01'));
-                $z305->appendChild($doc->createElement('z305-registration-date', $person['studiju_pradzia']));
-                $z305->appendChild($doc->createElement('z305-expiry-date', $person['studiju_pabaiga']));
-
-
-                $z305 = $doc->createElement('z305');
-                $z305 = $patron->appendChild($z305);
-
-                $z305->appendChild($doc->createElement('record-action', 'A'));
-                $z305->appendChild($doc->createElement('z305-id', '0' . $person['ak']));
-                $z305->appendChild($doc->createElement('z305-sub-library', 'KTUIF'));
-                $z305->appendChild($doc->createElement('z305-bor-type', 'DA'));
-                $z305->appendChild($doc->createElement('z305-bor-status', '01'));
-                $z305->appendChild($doc->createElement('z305-registration-date', $person['studiju_pradzia']));
-                $z305->appendChild($doc->createElement('z305-expiry-date', $person['studiju_pabaiga']));
-
-
-                $z305 = $doc->createElement('z305');
-                $z305 = $patron->appendChild($z305);
-
-                $z305->appendChild($doc->createElement('record-action', 'A'));
-                $z305->appendChild($doc->createElement('z305-id', '0' . $person['ak']));
-                $z305->appendChild($doc->createElement('z305-sub-library', 'KTUMD'));
-                $z305->appendChild($doc->createElement('z305-bor-type', 'DA'));
-                $z305->appendChild($doc->createElement('z305-bor-status', '01'));
-                $z305->appendChild($doc->createElement('z305-registration-date', $person['studiju_pradzia']));
-                $z305->appendChild($doc->createElement('z305-expiry-date', $person['studiju_pabaiga']));
-
-
-                $z308 = $doc->createElement('z308');
-                $z308 = $patron->appendChild($z308);
-
-                $z308->appendChild($doc->createElement('record-action', 'A'));
-                $z308->appendChild($doc->createElement('z308-key-type', '01'));
-                $z308->appendChild($doc->createElement('z308-key-data', '0' . strtoupper($person['ak'])));
-                $z308->appendChild($doc->createElement('z308-verification', $person['atsitiktiniu_simboliu_seka']));
-                $z308->appendChild($doc->createElement('z308-verification-type', '00'));
-                $z308->appendChild($doc->createElement('z308-status', 'AC'));
-                $z308->appendChild($doc->createElement('z308-encryption', 'H'));
+                    $z305->appendChild($doc->createElement('record-action', 'A'));
+                    $z305->appendChild($doc->createElement('z305-id', '0' . $person['ak']));
+                    $z305->appendChild($doc->createElement('z305-sub-library', $filialas));
+                    $z305->appendChild($doc->createElement('z305-bor-type', 'ST'));
+                    $z305->appendChild($doc->createElement('z305-bor-status', '01'));
+                    $z305->appendChild($doc->createElement('z305-registration-date', $person['studiju_pradzia']));
+                    $z305->appendChild($doc->createElement('z305-expiry-date', $person['studiju_pabaiga']));
+                }
 
 
                 $z308 = $doc->createElement('z308');
@@ -525,47 +514,24 @@ class Converter{
 
                 $z305->appendChild($doc->createElement('record-action', 'A'));
                 $z305->appendChild($doc->createElement('z305-id', '0' . $person['ak']));
-                $z305->appendChild($doc->createElement('z305-sub-library', 'KTU50'));
+                $z305->appendChild($doc->createElement('z305-sub-library', $this->filialai['bendras']));
                 $z305->appendChild($doc->createElement('z305-bor-type', 'DA'));
                 $z305->appendChild($doc->createElement('z305-bor-status', '01'));
                 $z305->appendChild($doc->createElement('z305-registration-date', $person['pareigu_pradzia']));
                 $z305->appendChild($doc->createElement('z305-expiry-date', $person['teisiu_galiojimo_pabaiga']));
 
+                foreach($this->filialai['filialai'] as $filialas){
+                    $z305 = $doc->createElement('z305');
+                    $z305 = $patron->appendChild($z305);
 
-                $z305 = $doc->createElement('z305');
-                $z305 = $patron->appendChild($z305);
-
-                $z305->appendChild($doc->createElement('record-action', 'A'));
-                $z305->appendChild($doc->createElement('z305-id', '0' . $person['ak']));
-                $z305->appendChild($doc->createElement('z305-sub-library', 'KTUCB'));
-                $z305->appendChild($doc->createElement('z305-bor-type', 'DA'));
-                $z305->appendChild($doc->createElement('z305-bor-status', '01'));
-                $z305->appendChild($doc->createElement('z305-registration-date', $person['pareigu_pradzia']));
-                $z305->appendChild($doc->createElement('z305-expiry-date', $person['teisiu_galiojimo_pabaiga']));
-
-
-                $z305 = $doc->createElement('z305');
-                $z305 = $patron->appendChild($z305);
-
-                $z305->appendChild($doc->createElement('record-action', 'A'));
-                $z305->appendChild($doc->createElement('z305-id', '0' . $person['ak']));
-                $z305->appendChild($doc->createElement('z305-sub-library', 'KTUIF'));
-                $z305->appendChild($doc->createElement('z305-bor-type', 'DA'));
-                $z305->appendChild($doc->createElement('z305-bor-status', '01'));
-                $z305->appendChild($doc->createElement('z305-registration-date', $person['pareigu_pradzia']));
-                $z305->appendChild($doc->createElement('z305-expiry-date', $person['teisiu_galiojimo_pabaiga']));
-
-
-                $z305 = $doc->createElement('z305');
-                $z305 = $patron->appendChild($z305);
-
-                $z305->appendChild($doc->createElement('record-action', 'A'));
-                $z305->appendChild($doc->createElement('z305-id', '0' . $person['ak']));
-                $z305->appendChild($doc->createElement('z305-sub-library', 'KTUMD'));
-                $z305->appendChild($doc->createElement('z305-bor-type', 'DA'));
-                $z305->appendChild($doc->createElement('z305-bor-status', '01'));
-                $z305->appendChild($doc->createElement('z305-registration-date', $person['pareigu_pradzia']));
-                $z305->appendChild($doc->createElement('z305-expiry-date', $person['teisiu_galiojimo_pabaiga']));
+                    $z305->appendChild($doc->createElement('record-action', 'A'));
+                    $z305->appendChild($doc->createElement('z305-id', '0' . $person['ak']));
+                    $z305->appendChild($doc->createElement('z305-sub-library', $filialas));
+                    $z305->appendChild($doc->createElement('z305-bor-type', 'DA'));
+                    $z305->appendChild($doc->createElement('z305-bor-status', '01'));
+                    $z305->appendChild($doc->createElement('z305-registration-date', $person['pareigu_pradzia']));
+                    $z305->appendChild($doc->createElement('z305-expiry-date', $person['teisiu_galiojimo_pabaiga']));
+                }
 
 
                 $z308 = $doc->createElement('z308');
